@@ -56,7 +56,7 @@ public class JobService {
         return savedJob;
     }
         public List<JobDocument> searchJobs(String keyword) {
-         return elasticRepository.findByTitleContainingIgnoreCase(keyword);
+         return elasticRepository.findByTitleMatches(keyword.trim());
     }
      public List<JobAdvertisement> getEmployerJobs(Long employerId) {
         return jpaRepository.findByEmployerId(employerId);

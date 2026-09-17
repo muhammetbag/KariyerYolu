@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 
 
+import org.springframework.web.bind.annotation.CrossOrigin;
+
+@CrossOrigin(origins = "*")
 @RestController 
 @RequestMapping("/api/users")
 @AllArgsConstructor 

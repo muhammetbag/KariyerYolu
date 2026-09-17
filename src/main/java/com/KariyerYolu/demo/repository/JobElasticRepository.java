@@ -8,6 +8,7 @@ import com.KariyerYolu.demo.document.JobDocument;
 
 public interface JobElasticRepository extends ElasticsearchRepository<JobDocument, String> {
     
-    List<JobDocument> findByTitleContainingIgnoreCase(String keyword);
+    // Containing yerine Matches kullanıyoruz ki boşluklu aramalarda ("Java Developer" gibi) Elasticsearch hata fırlatmasın.
+    List<JobDocument> findByTitleMatches(String keyword);
 
 }

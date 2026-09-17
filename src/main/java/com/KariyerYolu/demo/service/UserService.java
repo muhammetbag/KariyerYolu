@@ -1,5 +1,6 @@
 package com.KariyerYolu.demo.service;
  
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.KariyerYolu.demo.dto.User.UserRegisterRequest;
@@ -12,23 +13,18 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor 
 public class UserService   {
 
-    private final UserRepository userRepository;
-
+     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder; // YENİ EKLENDİ
     public UserResponse registerUser(UserRegisterRequest request) {
-        // Check if the email is already registered
-        if (!request.password().equals(request.passwordConfirm())) {
-            throw new RuntimeException("Hata: Şifreler birbiriyle uyuşmuyor!");
-        }
-        // Kural 2: Bu e-posta ile kayıtlı biri var mı?
-        if (userRepository.findByEmail(request.email()).isPresent()) {
-            throw new RuntimeException("Hata: Bu email adresi zaten kullanımda!");
-        }
-         User newUser = new User();
-        newUser.setEmail(request.email());
-        newUser.setPassword(request.password());  
-        newUser.setRole(request.role());
-         User savedUser = userRepository.save(newUser);
-        UserResponse response = new UserResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
-       return response;
+        User user = new User();
+        user.setEmail(request.email());
+        
+        // KRİTİK DEĞİŞİKLİK: Şifreyi veritabanına kaydetmeden önce Kriptoluyoruz!
+        user.setPassword(passwordEncoder.encode(request.password())); 
+        
+        user.setRole(request.role());
+        User savedUser = userRepository.save(user);
+        
+        return new UserResponse(savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
     }
 }
